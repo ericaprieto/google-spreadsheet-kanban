@@ -1,0 +1,15 @@
+.root {
+  height: 100%;
+  overflow: auto;
+  background-color: #cdcfdb;
+}
+
+.root :global(.ScrollbarsCustom-Content) {
+  height: 100%;
+}
+
+.columns {
+  height: 100%;
+  display: flex;
+  flex-shrink: 0;
+}

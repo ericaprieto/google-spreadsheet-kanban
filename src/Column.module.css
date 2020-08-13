@@ -1,0 +1,35 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  margin: 24px 12px;
+  min-width: 300px;
+  max-width: 300px;
+  background-color: #ebecf0 !important;
+}
+
+.root:first-child {
+  margin-left: 24px;
+}
+
+.root:last-child {
+  margin-right: 24px;
+}
+
+.title {
+  padding: 12px 12px 0px;
+  font-size: 18px;
+  font-weight: bolder;
+  margin: 0 0 8px;
+}
+
+.listContainer {
+  flex-grow: 1;
+}
+
+:global(.trackYVisible).listContainer {
+  width: calc(100% - 8px) !important;
+}
+
+.list {
+  padding: 12px;
+}

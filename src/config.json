@@ -1,0 +1,16 @@
+{
+  "statuses": [
+    "Blocked",
+    "Paused",
+    "Needs more attention",
+    "To Do",
+    "In Progress",
+    "Code Review Due",
+    "Code Review In Progress",
+    "Code Review Issues",
+    "Code Review Done",
+    "Ready for QA",
+    "Completed"
+  ],
+  "team": ["Erica", "Gustavo", "Ramon", "Joshua", "Matteo", "Radames"]
+}
