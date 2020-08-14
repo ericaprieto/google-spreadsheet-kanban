@@ -17,7 +17,7 @@ function Task({
       <div className={classes.inner}>
         <Box marginBottom="8px">
           <Typography>
-            {`#${[task.rowIndex + 1, task.Story, task["Task Name"]]
+            {`#${[task.rowIndex + 1, task.Story, task["Task%20Name"]]
               .filter(Boolean)
               .join(" ")}`}
           </Typography>

@@ -34,7 +34,9 @@ function Kanban({ sheet }: KanbanProps, ref: any) {
     function refresh() {
       api.getRows(sheet).then((rows) => {
         const [headerRows, ...rest] = rows;
-        const headers = headerRows.map((row) => row.value);
+        const headers = headerRows.map((row) =>
+          row.value ? encodeURI(row.value) : row.value
+        );
 
         const tasks = rest
           .map((row, index) => createTask(index + 1, row, headers))
@@ -55,8 +57,6 @@ function Kanban({ sheet }: KanbanProps, ref: any) {
     },
     [sheet]
   );
-
-  console.log({ tasks });
 
   const onUpdate = useCallback(
     function onUpdate(updatedTask: Task) {

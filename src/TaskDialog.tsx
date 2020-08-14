@@ -19,8 +19,8 @@ import ColorInput from "./ColorInput";
 function validate(task: TaskType) {
   const errors: any = {};
 
-  if (!task["Task Name"]) {
-    errors["Task Name"] = "Required";
+  if (!task["Task%20Name"]) {
+    errors["Task%20Name"] = "Required";
   }
 
   return errors;
@@ -44,7 +44,7 @@ function makeRenderField(team: string[], statuses: string[]) {
     if (field.name === "Status") {
       return (
         <FormControl fullWidth>
-          <InputLabel>{field.name}</InputLabel>
+          <InputLabel>{decodeURI(field.name)}</InputLabel>
           <Select
             native
             name={field.name}
@@ -62,10 +62,10 @@ function makeRenderField(team: string[], statuses: string[]) {
       );
     }
 
-    if (field.name === "Dev" || field.name === "Code Review Dev") {
+    if (field.name === "Dev" || field.name === "Code%20Review%20Dev") {
       return (
         <FormControl fullWidth>
-          <InputLabel>{field.name}</InputLabel>
+          <InputLabel>{decodeURI(field.name)}</InputLabel>
           <Select
             native
             name={field.name}
@@ -89,7 +89,7 @@ function makeRenderField(team: string[], statuses: string[]) {
         fullWidth
         error={Boolean(error)}
         name={field.name}
-        label={field.name}
+        label={decodeURI(field.name)}
         value={field.value}
         onChange={field.onChange}
         onBlur={field.onBlur}
@@ -121,7 +121,7 @@ function TaskDialog({
     onClose();
   }
 
-  const title = [task.rowIndex + 1, task.Story, task["Task Name"]]
+  const title = [task.rowIndex + 1, task.Story, task["Task%20Name"]]
     .filter(Boolean)
     .join(" ");
 
