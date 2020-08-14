@@ -43,8 +43,10 @@ function makeRenderField(team: string[], statuses: string[]) {
 
     if (field.name === "Status") {
       return (
-        <FormControl fullWidth>
-          <InputLabel>{decodeURI(field.name)}</InputLabel>
+        <FormControl fullWidth variant="outlined">
+          <InputLabel style={{ background: "white" }}>
+            {decodeURI(field.name)}
+          </InputLabel>
           <Select
             native
             name={field.name}
@@ -64,8 +66,10 @@ function makeRenderField(team: string[], statuses: string[]) {
 
     if (field.name === "Dev" || field.name === "Code%20Review%20Dev") {
       return (
-        <FormControl fullWidth>
-          <InputLabel>{decodeURI(field.name)}</InputLabel>
+        <FormControl fullWidth variant="outlined">
+          <InputLabel style={{ background: "white" }}>
+            {decodeURI(field.name)}
+          </InputLabel>
           <Select
             native
             name={field.name}
@@ -94,6 +98,7 @@ function makeRenderField(team: string[], statuses: string[]) {
         onChange={field.onChange}
         onBlur={field.onBlur}
         helperText={error}
+        variant="outlined"
       />
     );
   };

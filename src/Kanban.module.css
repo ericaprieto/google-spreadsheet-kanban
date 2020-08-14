@@ -4,6 +4,15 @@
   background-color: #cdcfdb;
 }
 
+.rootLoading {
+  height: 100%;
+  overflow: auto;
+  background-color: #cdcfdb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .root :global(.ScrollbarsCustom-Content) {
   height: 100%;
 }

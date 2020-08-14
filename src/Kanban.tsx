@@ -14,6 +14,7 @@ import { Task, createTask } from "./task";
 import Column from "./Column";
 import TaskDialog from "./TaskDialog";
 import classes from "./Kanban.module.css";
+import { CircularProgress } from "@material-ui/core";
 
 interface KanbanProps {
   sheet: string;
@@ -25,7 +26,7 @@ export interface KanbanActions {
 
 function Kanban({ sheet }: KanbanProps, ref: any) {
   const intervalRef = useRef<number>();
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<Task[]>();
   const [headers, setHeaders] = useState<string[]>([]);
   const [statuses, setStatuses] = useState<string[]>([]);
   const [selectedTask, setSelectedTask] = useState<Task>();
@@ -60,11 +61,15 @@ function Kanban({ sheet }: KanbanProps, ref: any) {
 
   const onUpdate = useCallback(
     function onUpdate(updatedTask: Task) {
+      if (!tasks) {
+        return;
+      }
+
       const task = tasks.find(
         (task) => task.rowIndex === updatedTask.rowIndex
       ) as Task;
 
-      setTasks((tasks) => {
+      setTasks((tasks = []) => {
         const updatedTasks = [...tasks];
         updatedTasks[tasks.indexOf(task)] = updatedTask;
         return updatedTasks;
@@ -90,7 +95,7 @@ function Kanban({ sheet }: KanbanProps, ref: any) {
         })
         .then(() => refresh())
         .catch(() => {
-          setTasks((tasks) => {
+          setTasks((tasks = []) => {
             const revertedTasks = [...tasks];
             revertedTasks[tasks.indexOf(updatedTask)] = task;
             return revertedTasks;
@@ -102,6 +107,10 @@ function Kanban({ sheet }: KanbanProps, ref: any) {
 
   const onCreate = useCallback(
     function onCreate(task: Task) {
+      if (!tasks) {
+        return;
+      }
+
       const maxRowIndex = tasks.reduce(
         (max, task) => Math.max(max, task.rowIndex),
         0
@@ -109,7 +118,7 @@ function Kanban({ sheet }: KanbanProps, ref: any) {
 
       const newTask = { ...task, rowIndex: maxRowIndex + 1 };
 
-      setTasks((tasks) => [...tasks, newTask]);
+      setTasks((tasks = []) => [...tasks, newTask]);
 
       api.insertRowAfter(sheet, maxRowIndex).then(
         () => {
@@ -138,22 +147,8 @@ function Kanban({ sheet }: KanbanProps, ref: any) {
     [headers]
   );
 
-  const tasksByGroup = useMemo(
-    () =>
-      tasks.reduce(
-        (acc, task) => ({
-          ...acc,
-          [task.Status]: acc[task.Status]
-            ? [...acc[task.Status], task]
-            : [task],
-        }),
-        {} as { [status: string]: Task[] }
-      ),
-    [tasks]
-  );
-
   useEffect(() => {
-    setTasks([]);
+    setTasks(undefined);
     setStatuses([]);
     setHeaders([]);
     setSelectedTask(undefined);
@@ -167,6 +162,28 @@ function Kanban({ sheet }: KanbanProps, ref: any) {
   }, [sheet, refresh]);
 
   useImperativeHandle(ref, () => ({ refresh }), [refresh]);
+
+  const tasksByGroup = useMemo(
+    () =>
+      (tasks || []).reduce(
+        (acc, task) => ({
+          ...acc,
+          [task.Status]: acc[task.Status]
+            ? [...acc[task.Status], task]
+            : [task],
+        }),
+        {} as { [status: string]: Task[] }
+      ),
+    [tasks]
+  );
+
+  if (typeof tasks === "undefined") {
+    return (
+      <div className={classes.rootLoading}>
+        <CircularProgress />
+      </div>
+    );
+  }
 
   return (
     <Scrollbar className={classes.root} noScrollY>

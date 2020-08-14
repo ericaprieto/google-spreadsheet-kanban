@@ -12,7 +12,7 @@
     "Ready for QA",
     "Completed"
   ],
-  "team": ["Erica", "Gustavo", "Ramon", "Joshua", "Matteo", "Radames"],
+  "team": ["Erica", "Gustavo", "Lucas", "Ramon", "Joshua", "Matteo", "Radames"],
   "colors": [
     { "red": 0.95686275, "green": 0.8, "blue": 0.8 },
     { "red": 1, "green": 0.9490196, "blue": 0.8 },

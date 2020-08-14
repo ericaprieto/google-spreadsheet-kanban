@@ -61,12 +61,10 @@ function listSheets() {
     .get({ spreadsheetId: SPREADSHEET_ID })
     .then((response) => response.result.sheets || [])
     .then((sheets) =>
-      sheets
-        .map((sheet) => ({
-          id: sheet.properties?.sheetId as number,
-          title: sheet.properties?.title as string,
-        }))
-        .filter((sheet) => sheet.id && sheet.title)
+      sheets.map((sheet) => ({
+        id: sheet.properties?.sheetId as number,
+        title: sheet.properties?.title as string,
+      }))
     );
 }
 

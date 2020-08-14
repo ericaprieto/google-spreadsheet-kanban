@@ -72,7 +72,11 @@ function LoggedIn() {
           <Box marginRight="auto" />
           <IconButton
             color="inherit"
-            onClick={(e) => kanbanRef.current && kanbanRef.current.refresh()}
+            onClick={() => {
+              if (kanbanRef.current) {
+                kanbanRef.current.refresh();
+              }
+            }}
           >
             <RefreshIcon />
           </IconButton>
