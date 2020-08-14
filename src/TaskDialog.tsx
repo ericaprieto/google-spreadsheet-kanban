@@ -99,6 +99,7 @@ function makeRenderField(team: string[], statuses: string[]) {
         onBlur={field.onBlur}
         helperText={error}
         variant="outlined"
+        multiline={field.name === "Notes"}
       />
     );
   };
