@@ -33,9 +33,10 @@ function Kanban({ sheet }: KanbanProps, ref: any) {
   const refresh = useCallback(
     function refresh() {
       api.getRows(sheet).then((rows) => {
-        const headers = rows.shift() as string[];
+        const [headerRows, ...rest] = rows;
+        const headers = headerRows.map((row) => row.value);
 
-        const tasks = rows
+        const tasks = rest
           .map((row, index) => createTask(index + 1, row, headers))
           .filter(Boolean) as Task[];
 
@@ -54,6 +55,8 @@ function Kanban({ sheet }: KanbanProps, ref: any) {
     },
     [sheet]
   );
+
+  console.log({ tasks });
 
   const onUpdate = useCallback(
     function onUpdate(updatedTask: Task) {
@@ -76,18 +79,23 @@ function Kanban({ sheet }: KanbanProps, ref: any) {
             (updatedTask as any)[header],
           ])
         )
-        .then(
-          () => {
-            return refresh();
-          },
-          () => {
-            setTasks((tasks) => {
-              const revertedTasks = [...tasks];
-              revertedTasks[tasks.indexOf(updatedTask)] = task;
-              return revertedTasks;
-            });
+        .then(() => {
+          if (task.backgroundColor !== updatedTask.backgroundColor) {
+            return api.setRowColor(
+              sheet,
+              updatedTask.rowIndex,
+              updatedTask.backgroundColor
+            );
           }
-        );
+        })
+        .then(() => refresh())
+        .catch(() => {
+          setTasks((tasks) => {
+            const revertedTasks = [...tasks];
+            revertedTasks[tasks.indexOf(updatedTask)] = task;
+            return revertedTasks;
+          });
+        });
     },
     [tasks, sheet, refresh, headers]
   );

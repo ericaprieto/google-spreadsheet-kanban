@@ -14,6 +14,7 @@ import {
   Box,
 } from "@material-ui/core";
 import { Task as TaskType } from "./task";
+import ColorInput from "./ColorInput";
 
 function validate(task: TaskType) {
   const errors: any = {};
@@ -26,8 +27,19 @@ function validate(task: TaskType) {
 }
 
 function makeRenderField(team: string[], statuses: string[]) {
-  return ({ field, form: { touched, errors }, meta }: FieldProps) => {
+  return ({ field, meta }: FieldProps) => {
     const error = meta.touched && meta.error;
+
+    if (field.name === "backgroundColor") {
+      return (
+        <ColorInput
+          label="Row Color"
+          name={field.name}
+          value={field.value}
+          onChange={field.onChange}
+        />
+      );
+    }
 
     if (field.name === "Status") {
       return (
@@ -36,7 +48,6 @@ function makeRenderField(team: string[], statuses: string[]) {
           <Select
             native
             name={field.name}
-            label={field.name}
             value={field.value}
             onChange={field.onChange}
             onBlur={field.onBlur}
@@ -58,7 +69,6 @@ function makeRenderField(team: string[], statuses: string[]) {
           <Select
             native
             name={field.name}
-            label={field.name}
             value={field.value}
             onChange={field.onChange}
             onBlur={field.onBlur}
@@ -125,7 +135,7 @@ function TaskDialog({
             </DialogContentText>
           </DialogTitle>
           <DialogContent>
-            {headers.map((header) => (
+            {["backgroundColor", ...headers].filter(Boolean).map((header) => (
               <Box key={header} marginBottom="16px">
                 <Field name={header}>{renderField}</Field>
               </Box>

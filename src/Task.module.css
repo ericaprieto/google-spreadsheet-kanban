@@ -15,6 +15,14 @@
   border-radius: 4px;
 }
 
+.taskColor {
+  display: inline-block;
+  height: 24px;
+  width: 70px;
+  border-radius: 16px;
+  background-color: currentColor;
+}
+
 .dev {
-  margin-right: 8px;
+  margin-left: 8px;
 }

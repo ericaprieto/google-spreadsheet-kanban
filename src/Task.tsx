@@ -1,6 +1,6 @@
 import React from "react";
 import { Typography, Chip, Avatar, Box, ButtonBase } from "@material-ui/core";
-import { Task as TaskType } from "./task";
+import { Task as TaskType, colorToRgb } from "./task";
 import classes from "./Task.module.css";
 
 function Task({
@@ -10,6 +10,8 @@ function Task({
   task: TaskType;
   onClick: (task: TaskType) => void;
 }) {
+  const color = colorToRgb(task.backgroundColor);
+
   return (
     <ButtonBase className={classes.root} onClick={() => onClick(task)}>
       <div className={classes.inner}>
@@ -20,7 +22,10 @@ function Task({
               .join(" ")}`}
           </Typography>
         </Box>
-        <Box textAlign="right" marginRight="-8px">
+        <Box display="flex" justifyContent="flex-end">
+          {color !== "rgb(255,255,255)" && (
+            <div className={classes.taskColor} style={{ color }} />
+          )}
           {task.Dev && (
             <Chip
               className={classes.dev}

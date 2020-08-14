@@ -4,6 +4,17 @@ const CLIENT_ID = process.env.REACT_APP_CLIENT_ID as string;
 const API_KEY = process.env.REACT_APP_API_KEY as string;
 const SPREADSHEET_ID = process.env.REACT_APP_SPREADSHEET_ID as string;
 
+export interface Color {
+  red: number;
+  green: number;
+  blue: number;
+}
+
+export interface Cell {
+  value: string;
+  color: Color;
+}
+
 function init(onStatusChange: (loggedIn: boolean) => void) {
   if (inited) {
     return Promise.reject("api already inited");
@@ -59,13 +70,23 @@ function listSheets() {
     );
 }
 
-function getRows(sheet: string) {
-  return gapi.client.sheets.spreadsheets.values
+function getRows(sheet: string): Promise<Cell[][]> {
+  return gapi.client.sheets.spreadsheets
     .get({
       spreadsheetId: SPREADSHEET_ID,
-      range: sheet,
+      ranges: [sheet],
+      includeGridData: true,
     })
-    .then((response) => response.result.values || []);
+    .then((response: any) =>
+      response.result.sheets[0].data[0].rowData
+        .reduce((acc: any, rowData: any) => [...acc, rowData], [])
+        .map((rowData: any) =>
+          rowData.values.map((value: any) => ({
+            value: value.formattedValue,
+            color: value.effectiveFormat?.backgroundColor,
+          }))
+        )
+    );
 }
 
 function indexToSpreadsheetColumn(num: number) {
@@ -113,9 +134,15 @@ function updateCells(sheet: string, data: [number, number, number | string][]) {
 }
 
 function insertRowAfter(sheet: string, rowIndex: number) {
-  return listSheets()
-    .then((sheets) => sheets.find((it) => it.title === sheet) as { id: number })
-    .then((sheet) => {
+  return gapi.client.sheets.spreadsheets
+    .get({
+      spreadsheetId: SPREADSHEET_ID,
+      ranges: [sheet],
+    })
+    .then(
+      (response: any) => response.result.sheets[0].properties.sheetId as number
+    )
+    .then((sheetId) => {
       return gapi.client.sheets.spreadsheets
         .batchUpdate(
           {
@@ -126,7 +153,7 @@ function insertRowAfter(sheet: string, rowIndex: number) {
               {
                 insertDimension: {
                   range: {
-                    sheetId: sheet.id,
+                    sheetId,
                     dimension: "ROWS",
                     startIndex: 1,
                     endIndex: 2,
@@ -136,7 +163,7 @@ function insertRowAfter(sheet: string, rowIndex: number) {
               {
                 moveDimension: {
                   source: {
-                    sheetId: sheet.id,
+                    sheetId,
                     dimension: "ROWS",
                     startIndex: 1,
                     endIndex: 2,
@@ -151,6 +178,49 @@ function insertRowAfter(sheet: string, rowIndex: number) {
     });
 }
 
+function setRowColor(sheet: string, rowIndex: number, color: Color) {
+  return gapi.client.sheets.spreadsheets
+    .get({
+      spreadsheetId: SPREADSHEET_ID,
+      ranges: [sheet],
+    })
+    .then(
+      (response: any) => response.result.sheets[0].properties.sheetId as number
+    )
+    .then((sheetId) => {
+      return gapi.client.sheets.spreadsheets.batchUpdate(
+        {
+          spreadsheetId: SPREADSHEET_ID,
+        },
+        {
+          requests: [
+            {
+              updateCells: {
+                rows: [
+                  {
+                    values: Array(30)
+                      .fill(null)
+                      .map(() => ({
+                        userEnteredFormat: {
+                          backgroundColor: color,
+                        },
+                      })),
+                  },
+                ],
+                fields: "userEnteredFormat.backgroundColor",
+                range: {
+                  sheetId: sheetId,
+                  startRowIndex: rowIndex,
+                  endRowIndex: rowIndex + 1,
+                },
+              },
+            },
+          ],
+        }
+      );
+    });
+}
+
 const api = {
   init,
   signIn,
@@ -160,6 +230,7 @@ const api = {
   updateCell,
   updateCells,
   insertRowAfter,
+  setRowColor,
 };
 
 export default api;

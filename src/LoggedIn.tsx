@@ -64,7 +64,9 @@ function LoggedIn() {
             onClose={() => setSheetMenuEl(undefined)}
           >
             {sheets.map((sheet) => (
-              <MenuItem onClick={changeSheet(sheet)}>{sheet}</MenuItem>
+              <MenuItem key={sheet} onClick={changeSheet(sheet)}>
+                {sheet}
+              </MenuItem>
             ))}
           </Menu>
           <Box marginRight="auto" />

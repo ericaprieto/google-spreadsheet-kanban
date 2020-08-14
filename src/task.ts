@@ -1,5 +1,8 @@
+import { Cell, Color } from "./api";
+
 export interface Task {
   rowIndex: number;
+  backgroundColor: Color;
   Story: string;
   "Task Name": string;
   Status: string;
@@ -24,13 +27,19 @@ export interface Task {
   "Bug Fixes [hours]"?: string;
 }
 
-export function createTask(rowIndex: number, row: string[], headers: string[]) {
+export function colorToRgb(color: Color) {
+  return `rgb(${Math.round((color.red || 0) * 255)},${Math.round(
+    (color.green || 0) * 255
+  )},${Math.round((color.blue || 0) * 255)})`;
+}
+
+export function createTask(rowIndex: number, row: Cell[], headers: string[]) {
   const task = (row.reduce(
-    (task, value, headerIndex) => ({
+    (task, cell, headerIndex) => ({
       ...task,
-      [headers[headerIndex]]: value,
+      [headers[headerIndex]]: cell.value,
     }),
-    { rowIndex }
+    { rowIndex, backgroundColor: row[0].color }
   ) as any) as Task;
 
   if (!task["Task Name"] || !task.Status) {
