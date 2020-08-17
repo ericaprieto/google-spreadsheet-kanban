@@ -15,11 +15,32 @@
   margin-right: 24px;
 }
 
+.collapsed {
+  min-width: 43px;
+  max-width: 43px;
+}
+
+.collapsed > .title {
+  transform: rotate(-90deg) translateX(-100%);
+  transform-origin: left top 0px;
+  justify-content: flex-end;
+}
+
 .title {
-  padding: 12px 12px 0px;
+  display: flex;
+}
+
+.title :global(.MuiButton-root) {
+  flex-shrink: 0;
+  justify-content: flex-start;
+  text-transform: none;
+  font-weight: 400;
   font-size: 18px;
-  font-weight: bolder;
-  margin: 0 0 8px;
+}
+
+.title :global(.MuiChip-root) {
+  margin-left: 8px;
+  margin-bottom: -1px;
 }
 
 .listContainer {

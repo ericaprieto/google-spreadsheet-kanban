@@ -201,10 +201,9 @@ function Kanban({ sheet }: KanbanProps, ref: any) {
         {statuses.map((status) => (
           <Column
             key={status}
-            team={config.team}
+            sheet={sheet}
             status={status}
             tasks={tasksByGroup[status]}
-            statuses={statuses}
             onCreateTask={onCreateTask}
             onTaskClick={setSelectedTask}
           />
